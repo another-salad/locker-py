@@ -18,9 +18,7 @@ setup(
     install_requires=read("requirements.txt"),
     entry_points=dict(
         console_scripts=[
-            'encrypt = src.locker.main:encrypt',
-            'decrypt = src.locker.main:decrypt',
-            'generate = src.locker.main:generate'
+            'generate = src.locker.console:generate'
         ]
     ),
     include_package_data=True
