@@ -38,31 +38,31 @@ def crypto_operation(key: str, source: Path, dest: Path | None, crypto_fnc: Call
 
     # To avoid any potentially horrible consequences, lets make an output folder in the parent
     # output directory. More Path fun....
-    actual_ouput_dir = Path(Path(dest).absolute(), datetime.strftime(datetime.now(), "%Y-%m-%d_%H.%M.%S"))
-    print(f"Creating parent output directory: {actual_ouput_dir}")
-    actual_ouput_dir.absolute().mkdir()
+    actual_output_dir = Path(Path(dest).absolute(), datetime.strftime(datetime.now(), "%Y-%m-%d_%H.%M.%S"))
+    print(f"Creating parent output directory: {actual_output_dir}")
+    actual_output_dir.absolute().mkdir()
 
     try:
         key = key.encode()  # Key must be Bytes for fernet
         if source.is_dir():
             for file_path in source.glob("**/*"):
-                crypto_fnc(key, file_path, actual_ouput_dir)
+                crypto_fnc(key, file_path, actual_output_dir)
         elif source.is_file():
-            crypto_fnc(key, source, actual_ouput_dir)
+            crypto_fnc(key, source, actual_output_dir)
     except Exception as exc:
         print(f"Error returned: {repr(exc)}")
-        if actual_ouput_dir.exists() and not any(actual_ouput_dir.iterdir()):
-            print(f"Attempting to remove unused output DIR: {actual_ouput_dir}")
+        if actual_output_dir.exists() and not any(actual_output_dir.iterdir()):
+            print(f"Attempting to remove unused output DIR: {actual_output_dir}")
             try:
-                actual_ouput_dir.rmdir()  # attempt some form of cleanup
+                actual_output_dir.rmdir()  # attempt some form of cleanup
             except:  # Oh Python
-                print(f"Failed to remove {actual_ouput_dir}")
+                print(f"Failed to remove {actual_output_dir}")
 
         print("Failure.")
         return 1
 
-    print(f"files in output dir ({actual_ouput_dir}):")
-    for out_file in actual_ouput_dir.iterdir():
+    print(f"files in output dir ({actual_output_dir}):")
+    for out_file in actual_output_dir.iterdir():
         if out_file.is_file():
             print(out_file)
     return 0
