@@ -6,7 +6,13 @@ from pathlib import Path
 from datetime import datetime
 import logging
 
-from src.locker.common.crpyto import encryptor, decryptor
+# Path hacks because Python
+import os
+import sys
+
+sys.path.append(os.path.join(str(Path(__file__).parent.parent), "src"))
+
+from locker.common.crpyto import encryptor, decryptor
 
 
 class CryptoTestCase(TestCase):
