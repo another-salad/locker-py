@@ -15,7 +15,7 @@ class MainArgs(ArgumentParser):
         super().__init__(description=description)
         self.add_argument("--decrypt", dest="decrypt", action="store_true")
         self.add_argument("--source", dest="source", type=str)
-        self.add_argument("--dest", dest="dest", type=str)
+        self.add_argument("--dest", dest="dest", type=str, required=False)
 
 
 class PathSadness(Exception):
@@ -28,15 +28,15 @@ def _path_checker(path_to_check: Path):
         raise PathSadness(f"{path_to_check} isn't a valid path.")
 
 
-def do_action(decrypt: bool, source: str, dest: str) -> str | None:
+def do_action(decrypt: bool, source: str, dest: str | None) -> str | None:
     source_path = Path(source)
     _path_checker(source_path)
     key = getpass("Please enter your key: ")
     if not decrypt:
-        return encryptor(key, source_path, Path(dest))
+        return encryptor(key, source_path, dest)
 
 
 if __name__ == "__main__":
     """lets parse some args"""
     args, _ = MainArgs().parse_known_args()
-    do_action(args.decrypt, args.source, args.dest)
+    do_action(args.decrypt, args.source, getattr(args, "dest", None))
