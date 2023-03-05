@@ -12,12 +12,12 @@ from src.locker.common.crpyto import encryptor, decryptor
 class CryptoTestCase(TestCase):
 
     test_key = "t6foLpDJNBLlZDlwDD9aRmglEPtj3kjqHixmRuwo6gU="
-    in_dir = Path(Path().parent.absolute(), "test_data")
-    out_dir = Path(Path().parent.absolute(), "output")
+    in_dir = Path(Path(__file__).parent.resolve(), "test_data")
+    out_dir = Path(Path(__file__).parent.resolve(), "output")
 
     @contextmanager
     def _wrapper(self, fname):
-        test_sub_dir = Path(self.out_dir, f'test-{fname}')
+        test_sub_dir = Path(self.out_dir.resolve(), f'test-{fname}')
         logging.info("Making DIR '%s' for test case.", test_sub_dir.absolute())
         test_sub_dir.mkdir()
         yield test_sub_dir
