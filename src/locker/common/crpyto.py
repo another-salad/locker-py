@@ -46,7 +46,8 @@ def crypto_operation(key: str, source: Path, dest: Path | None, crypto_fnc: Call
         key = key.encode()  # Key must be Bytes for fernet
         if source.is_dir():
             for file_path in source.glob("**/*"):
-                crypto_fnc(key, file_path, actual_output_dir)
+                if file_path.is_file():
+                    crypto_fnc(key, file_path, actual_output_dir)
         elif source.is_file():
             crypto_fnc(key, source, actual_output_dir)
     except Exception as exc:
