@@ -2,6 +2,7 @@
 
 from pathlib import Path
 from datetime import datetime
+from typing import Callable
 
 from cryptography import fernet
 
@@ -11,14 +12,22 @@ def gen_key() -> bytes:
     return fernet.Fernet.generate_key()
 
 
-def _write_file(key: str, source_file: Path, dest_dir: Path):
+def _write_file_enc(key: str, source_file: Path, dest_dir: Path):
+    """Reads data from source file, encrypts it via key and writes it to target."""
     enc_data = fernet.Fernet(key).encrypt(source_file.read_bytes())
     enc_file = Path(dest_dir, fernet.Fernet(key).encrypt(source_file.name.encode()).decode())
     enc_file.write_bytes(enc_data)
 
 
-def encryptor(key: str, source: Path, dest: Path | None) -> str:
-    """Encrypts a file/folder with the provided key"""
+def _write_file_dec(key: str, source_file: Path, dest_dir: Path):
+    """Reads data from source file, decrypts it via key and writes it to target."""
+    enc_data = fernet.Fernet(key).decrypt(source_file.read_bytes())
+    enc_file = Path(dest_dir, fernet.Fernet(key).decrypt(source_file.name.encode()).decode())
+    enc_file.write_bytes(enc_data)
+
+
+def crypto_operation(key: str, source: Path, dest: Path | None, crypto_fnc: Callable) -> int:
+    """Encrypts/Decrypts a file/folder with the provided key"""
     # Check if the source directory is valid (ie a file, folder)
     if not any([source.is_dir(), source.is_file()]):
         print(f"Source: '{source}' is neither a file or folder, exiting.")
@@ -37,11 +46,11 @@ def encryptor(key: str, source: Path, dest: Path | None) -> str:
         key = key.encode()  # Key must be Bytes for fernet
         if source.is_dir():
             for file_path in source.glob("**/*"):
-                _write_file(key, file_path, actual_ouput_dir)
+                crypto_fnc(key, file_path, actual_ouput_dir)
         elif source.is_file():
-            _write_file(key, source, actual_ouput_dir)
+            crypto_fnc(key, source, actual_ouput_dir)
     except Exception as exc:
-        print(f"Error returned during encryption: {repr(exc)}")
+        print(f"Error returned: {repr(exc)}")
         if actual_ouput_dir.exists() and not any(actual_ouput_dir.iterdir()):
             print(f"Attempting to remove unused output DIR: {actual_ouput_dir}")
             try:
@@ -52,8 +61,18 @@ def encryptor(key: str, source: Path, dest: Path | None) -> str:
         print("Failure.")
         return 1
 
-    print(f"Encrypted files in output dir ({actual_ouput_dir}):")
+    print(f"files in output dir ({actual_ouput_dir}):")
     for out_file in actual_ouput_dir.iterdir():
         if out_file.is_file():
             print(out_file)
     return 0
+
+
+def encryptor(key: str, source: Path, dest: Path | None) -> int:
+    """Encrypts files in source directory"""
+    return crypto_operation(key, source, dest, _write_file_enc)
+
+
+def decryptor(key: str, source: Path, dest: Path | None) -> int:
+    """Decrypts files in source directory"""
+    return crypto_operation(key, source, dest, _write_file_dec)

@@ -3,7 +3,7 @@
 from argparse import ArgumentParser
 from pathlib import Path
 from getpass import getpass
-from src.locker.common.crpyto import encryptor
+from src.locker.common.crpyto import encryptor, decryptor
 
 
 class MainArgs(ArgumentParser):
@@ -29,11 +29,14 @@ def _path_checker(path_to_check: Path):
 
 
 def do_action(decrypt: bool, source: str, dest: str | None) -> str | None:
+    """Wrapper around the decryptor, encryptor functions"""
     source_path = Path(source)
     _path_checker(source_path)
     key = getpass("Please enter your key: ")
-    if not decrypt:
-        return encryptor(key, source_path, dest)
+    if decrypt:
+        return decryptor(key, source_path, dest)
+
+    return encryptor(key, source_path, dest)
 
 
 if __name__ == "__main__":
