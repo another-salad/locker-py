@@ -13,7 +13,7 @@ setup(
     author="Jumbo Bumbo",
     long_description=read('README.md'),
     license="BSD",
-    python_requires='>=3.10',
+    python_requires='>=3.9',
     packages=find_packages(),
     install_requires=read("requirements.txt"),
     entry_points=dict(

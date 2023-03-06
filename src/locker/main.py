@@ -1,5 +1,6 @@
 """Encrypt and Decrypt"""
 
+from typing import Union  # py3.9 support
 from argparse import ArgumentParser
 from pathlib import Path
 from getpass import getpass
@@ -28,7 +29,7 @@ def _path_checker(path_to_check: Path):
         raise PathSadness(f"{path_to_check} isn't a valid path.")
 
 
-def do_action(decrypt: bool, source: str, dest: str | None) -> str | None:
+def do_action(decrypt: bool, source: str, dest: Union[str, None]) -> Union[str, None]:
     """Wrapper around the decryptor, encryptor functions"""
     source_path = Path(source)
     _path_checker(source_path)
