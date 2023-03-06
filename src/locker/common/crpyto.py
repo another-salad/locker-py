@@ -1,5 +1,6 @@
 """A thin wrapper around cryptography"""
 
+from typing import Union  # py3.9 support
 from pathlib import Path
 from datetime import datetime
 from typing import Callable
@@ -26,7 +27,7 @@ def _write_file_dec(key: str, source_file: Path, dest_dir: Path):
     enc_file.write_bytes(enc_data)
 
 
-def crypto_operation(key: str, source: Path, dest: Path | None, crypto_fnc: Callable) -> int:
+def crypto_operation(key: str, source: Path, dest: Union[Path, str, None], crypto_fnc: Callable) -> int:
     """Encrypts/Decrypts a file/folder with the provided key"""
     # Check if the source directory is valid (ie a file, folder)
     if not any([source.is_dir(), source.is_file()]):
@@ -69,11 +70,11 @@ def crypto_operation(key: str, source: Path, dest: Path | None, crypto_fnc: Call
     return 0
 
 
-def encryptor(key: str, source: Path, dest: Path | None) -> int:
+def encryptor(key: str, source: Path, dest: Union[Path, str, None]) -> int:
     """Encrypts files in source directory"""
     return crypto_operation(key, source, dest, _write_file_enc)
 
 
-def decryptor(key: str, source: Path, dest: Path | None) -> int:
+def decryptor(key: str, source: Path, dest: Union[Path, str, None]) -> int:
     """Decrypts files in source directory"""
     return crypto_operation(key, source, dest, _write_file_dec)
