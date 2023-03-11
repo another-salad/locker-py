@@ -64,7 +64,7 @@ def crypto_operation(key: str, source: Path, dest: Union[Path, str, None], crypt
             for file_path in source.glob("**/*"):
                 if file_path.is_file():
                     # Ignore our own 'root' (relative root, if thats a term...) directory that is created during encryption
-                    relative_dir = re.sub(r"\d{4}-\d{2}-\d{2}_\d{2}.\d{2}.\d{2}___r", "", str(file_path.relative_to(source).parent))
+                    relative_dir = re.sub(r"\d{4}-\d{2}-\d{2}_\d{2}.\d{2}.\d{2}___r", "", str(file_path.relative_to(source).parent))[1:]
                     print("...relative DIR...")
                     print(relative_dir)
                     dir = crypto_dir_fnc(key, actual_output_root_dir, relative_dir)
