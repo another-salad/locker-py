@@ -4,7 +4,7 @@ from typing import Union  # py3.9 support
 from argparse import ArgumentParser
 from pathlib import Path
 from getpass import getpass
-from src.locker.common.crpyto import encryptor, decryptor
+from common.crpyto import encryptor, decryptor
 
 
 class MainArgs(ArgumentParser):
