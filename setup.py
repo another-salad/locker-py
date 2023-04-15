@@ -9,6 +9,7 @@ def read(fname):
 
 
 setup(
+    version="0.1",
     name="lockerpy",
     author="Jumbo Bumbo",
     long_description=read('README.md'),
